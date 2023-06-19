@@ -22,6 +22,7 @@ const Authentication = () => {
 
   const handleNameChange = (value: string) => {
     setEmail(value);
+    setErrorMsg(errorMsg);
     setErrorMsg('');
   };
 
@@ -41,12 +42,13 @@ const Authentication = () => {
     try {
       const res = await axios.post(url, data);
 
-      authContext.authStore(res.data.authToken);
+      authContext.authStore(res?.data.authToken);
       setAuth(res.data.authToken);
 
       if (res.status === 200) {
         setError(false);
         setErrorMsg('');
+        navigate('/form');
       } else {
         setError(true);
         setErrorMsg('Invalid credentials');
@@ -56,6 +58,9 @@ const Authentication = () => {
       setErrorMsg('An error occurred');
       setAuth(err);
     }
+    if (authContext?.authCode.trim().length > 0) {
+      navigate('/form');
+    }
   };
 
   const buttonClickHandler = (e: React.FormEvent) => {
@@ -63,10 +68,6 @@ const Authentication = () => {
     if (!error) {
       setEmail('');
       setPassword('');
-    }
-
-    if (authContext.authCode.trim().length > 0) {
-      navigate('/form');
     }
   };
 

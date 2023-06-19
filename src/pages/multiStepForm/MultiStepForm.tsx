@@ -3,7 +3,7 @@ import LabelInput from '../../components/labelInput/LabelInput';
 import FormContainer from '../../components/formContainer/FormContainer';
 import StepControlButton from '../../components/stepControlButton/StepControlButton';
 import 'react-phone-input-2/lib/style.css';
-import PhoneInput, { CountryData } from 'react-phone-input-2';
+import PhoneInput from 'react-phone-input-2';
 import { AuthContext } from '../../store/AuthContext';
 import axios from 'axios';
 import './MultiStepForm.css';
@@ -37,17 +37,12 @@ const MultiStepForm: React.FC = () => {
   const [button3Disabled, setButton3Disabled] = useState(true);
   const [button4Disabled, setButton4Disabled] = useState(true);
 
-  const [phone, setPhone] = useState<string>('');
-  const [dialCode, setDailCode] = useState<any>('');
-  const [country, setCountry] = useState<string>('IN');
   const [errorStep1, setErrorStep1] = useState<string[]>([]);
   const [errorStep2, setErrorStep2] = useState<string[]>([]);
   const [errorStep3, setErrorStep3] = useState<string[]>([]);
   const [errorStep4, setErrorStep4] = useState<string[]>([]);
-  const [fileLists, setFileLists] = useState<string[]>([]);
-  const [filesLists, setFilesLists] = useState<string[]>([]);
+
   const [fileStore, setFileStore] = useState<any>([]);
-  const [filesStore, setFilesStore] = useState<any>([]);
 
   const [response, setResponse] = useState<any>(null);
   const [formData, setFormData] = useState<FormData>({
@@ -193,13 +188,7 @@ const MultiStepForm: React.FC = () => {
 
     return errors;
   };
-  const handleOnChange = (value: string, country: CountryData) => {
-    setPhone(value);
-
-    setCountry(country.dialCode.replace('+', ''));
-
-    setDailCode(country?.dialCode);
-
+  const handleOnChange = (value: string) => {
     setFormData((prevData) => ({
       ...prevData,
       phone_number: value,
@@ -254,7 +243,6 @@ const MultiStepForm: React.FC = () => {
     const files = e.target.files;
     if (files) {
       const fileList = Array.from(files);
-      setFilesStore(fileList);
 
       if (fileList.length > 5) {
         // Limit the number of files to 5
@@ -262,7 +250,6 @@ const MultiStepForm: React.FC = () => {
       }
 
       fileList.map((file) => setFileStore([...fileStore, file.name]));
-      fileList.map((file) => setFilesLists([...fileLists, file.name]));
 
       setFormData((prevData) => ({
         ...prevData,
@@ -289,9 +276,10 @@ const MultiStepForm: React.FC = () => {
     if (formData.single_file) {
       data.append('single_file', formData.single_file);
     }
-    formData.multi_file.forEach((file, index) => {
+    formData.multi_file.forEach((file) => {
       data.append('multi_file[]', file); // Update the parameter name to 'multi_file[]'
     });
+    console.log('data');
     console.log(data);
     try {
       setStep((prevStep) => prevStep + 1);
@@ -306,6 +294,7 @@ const MultiStepForm: React.FC = () => {
       setResponse(err);
     }
 
+    console.log('response');
     console.log(response);
   };
   const captureGeolocation = () => {
