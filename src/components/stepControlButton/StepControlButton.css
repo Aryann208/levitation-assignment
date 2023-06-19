@@ -1,0 +1,10 @@
+.StepControlButton {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-top: 1em;
+  /* border: 1px solid red; */
+}
+.Button {
+  width: 30%;
+}
